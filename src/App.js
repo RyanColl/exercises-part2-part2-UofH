@@ -1,25 +1,45 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react'
 
-function App() {
+const App = () => {
+  const [ persons, setPersons ] = useState([
+    { name: 'Arto Hellas' }
+  ]) 
+  const [ newName, setNewName ] = useState('')
+
+  const deltaInput = (e) => {
+    setNewName(e.target.value)
+  }
+  const handleButton = (e) => {
+    e.preventDefault()
+    let personObj = {
+      name: newName
+    }
+    setPersons(persons.concat(personObj))
+    setNewName('')
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h2>Phonebook</h2>
+      <form>
+        <div>
+          name: <input value={newName} onChange={deltaInput}/>
+        </div>
+        <div>
+          <button type="submit" onClick={handleButton}>add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      <ul>{persons.map(({name}, i) => {
+         return(
+           <li key={i}>
+             {name}
+           </li>
+           
+         ) 
+      })}</ul>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
