@@ -1,16 +1,22 @@
 import './App.css';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Numbers from './components/Numbers';
+import dbInteraction from './services/dbInteraction';
 
 //  Maintain the application's state and all event handlers in the App root component.
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+    { name: '', number: '' }
   ])
+  useEffect(() => {
+    dbInteraction
+      .getAll()
+      .then(initialPeople => {
+        setPersons(initialPeople)
+      })
+  }, [])
+  
   const [ newName, setNewName ] = useState('')
   const [ newNum, setNewNum ] = useState(0)
   const [ filter, setFilter ] = useState('')
@@ -39,6 +45,7 @@ const App = () => {
       setNewNum(0)
     }
     else {
+      dbInteraction.create(personObj)
       setPersons(persons.concat(personObj))
       setNewName('')
       setNewNum(0)
@@ -64,7 +71,7 @@ const App = () => {
           <button type="submit" onClick={handleButton}>add</button>
         </div>
       </form>
-      <Numbers persons={persons} filter={filter}/>
+      <Numbers persons={persons} filter={filter} delete={setPersons}/>
     </div>
   )
 }
